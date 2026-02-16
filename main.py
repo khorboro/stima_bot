@@ -262,11 +262,6 @@ async def process_final(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer("Ошибка в данных вопроса №14. Похоже, там введено не слово.")
 
-    # Здесь логика из Python-скрипта
-    # Данные лежат в data['q1'], data['q2'] и т.д.
-    # Пример:
-    # result = 300 * float(data['q1']) + float(data['q14'])
-
     await message.answer(f"Расчет окончен! Итоговое значение: {base_result}")
     await state.clear()
 
