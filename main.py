@@ -8,8 +8,10 @@ import os
 
 load_dotenv()
 
-
 API_TOKEN = os.getenv("BOT_TOKEN")
+
+if not API_TOKEN:
+    print("ОШИБКА: Токен не найден в переменных окружения!")
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
