@@ -3,9 +3,13 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 
-API_TOKEN = '8475804430:AAGO6BKdxJVHziuHe5_sBJ33RstVUec2X0k'
+API_TOKEN = os.getenv("BOT_TOKEN")
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
@@ -34,79 +38,79 @@ async def cmd_start(message: types.Message, state: FSMContext):
 
 @dp.message(Form.q1)
 async def process_q1(message: types.Message, state: FSMContext):
-    await state.update_data(q1=message.text)  # Сохраняем ответ
+    await state.update_data(q1=message.text)
     await message.answer("Соблюдение стандартов медицинской помощи. Введите: да или нет, где выполнил это да, где нарушения это нет: ")
     await state.set_state(Form.q2)
 
 @dp.message(Form.q2)
 async def process_q2(message: types.Message, state: FSMContext):
-    await state.update_data(q2=message.text)  # Сохраняем ответ
+    await state.update_data(q2=message.text)
     await message.answer("Соблюдение  правил учета, порядка  хранения,  получения, использования лекарственных средств и медицинских изделий, сроков их годности. Введите: да или нет, где отсутствие это да, где выявлено это нет: ")
     await state.set_state(Form.q3)
 
 @dp.message(Form.q3)
 async def process_q3(message: types.Message, state: FSMContext):
-    await state.update_data(q3=message.text)  # Сохраняем ответ
+    await state.update_data(q3=message.text)
     await message.answer("Введите количество направленных на прививки от врача: ")
     await state.set_state(Form.q4)
 
 @dp.message(Form.q4)
 async def process_q4(message: types.Message, state: FSMContext):
-    await state.update_data(q4=message.text)  # Сохраняем ответ
+    await state.update_data(q4=message.text)
     await message.answer("Случаи заболеваний, впервые выявленные в далеко зашедших стадиях, в т.ч. онкологические (случаи ЗНО, выявленные в 3-4 клинических стадиях по зависимым от врача причинам). Введите: нет или есть ")
     await state.set_state(Form.q5)
 
 @dp.message(Form.q5)
 async def process_q5(message: types.Message, state: FSMContext):
-    await state.update_data(q5=message.text)  # Сохраняем ответ
+    await state.update_data(q5=message.text)
     await message.answer("Введите количество дефектов контроля качества: ")
     await state.set_state(Form.q6)
 
 @dp.message(Form.q6)
 async def process_q6(message: types.Message, state: FSMContext):
-    await state.update_data(q6=message.text)  # Сохраняем ответ
+    await state.update_data(q6=message.text)
     await message.answer("Введите: да или нет, есть или нет благодарности в МЗ: ")
     await state.set_state(Form.q7)
 
 @dp.message(Form.q7)
 async def process_q7(message: types.Message, state: FSMContext):
-    await state.update_data(q7=message.text)  # Сохраняем ответ
+    await state.update_data(q7=message.text)
     await message.answer("Введите случаи оформления диспансеризации: ")
     await state.set_state(Form.q8)
 
 @dp.message(Form.q8)
 async def process_q8(message: types.Message, state: FSMContext):
-    await state.update_data(q8=message.text)  # Сохраняем ответ
+    await state.update_data(q8=message.text)
     await message.answer("Введите количество направлений на диспансеризацию: ")
     await state.set_state(Form.q9)
 
 @dp.message(Form.q9)
 async def process_q9(message: types.Message, state: FSMContext):
-    await state.update_data(q9=message.text)  # Сохраняем ответ
+    await state.update_data(q9=message.text)
     await message.answer("Введите текущую нагрузку врача по диспансерному наблюдению: ")
     await state.set_state(Form.q10)
 
 @dp.message(Form.q10)
 async def process_q10(message: types.Message, state: FSMContext):
-    await state.update_data(q10=message.text)  # Сохраняем ответ
+    await state.update_data(q10=message.text)
     await message.answer("Привлечение к дополнительной работе. Введите: да или нет, 1) привлекался, 2) не привлекался: ")
     await state.set_state(Form.q11)
 
 @dp.message(Form.q11)
 async def process_q11(message: types.Message, state: FSMContext):
-    await state.update_data(q11=message.text)  # Сохраняем ответ
+    await state.update_data(q11=message.text)
     await message.answer("облюдение правил внутреннего распорядка. Введите: нет или есть, где: 1) выполнение, 2) имеется нарушение: ")
     await state.set_state(Form.q12)
 
 @dp.message(Form.q12)
 async def process_q12(message: types.Message, state: FSMContext):
-    await state.update_data(q12=message.text)  # Сохраняем ответ
+    await state.update_data(q12=message.text)
     await message.answer("Соблюдение сроков оформления документов на МСЭ. Введите: нет или есть, где: 1) до 30 дней, 2) имеется нарушение сроков. ")
     await state.set_state(Form.q13)
 
 @dp.message(Form.q13)
 async def process_q13(message: types.Message, state: FSMContext):
-    await state.update_data(q13=message.text)  # Сохраняем ответ
+    await state.update_data(q13=message.text)
     await message.answer("Выполнение СЭМД 500 и более. Введите: да или нет, 1)выполнение, 2) не выполнение: ")
     await state.set_state(Form.q14)
 
@@ -114,7 +118,7 @@ async def process_q13(message: types.Message, state: FSMContext):
 @dp.message(Form.q14)
 async def process_final(message: types.Message, state: FSMContext):
     await state.update_data(q14=message.text)
-    data = await state.get_data()  # Получаем словарь со всеми ответами
+    data = await state.get_data()
     base_result = 300
     try:
         # Преобразуем строку из state в число
@@ -122,21 +126,21 @@ async def process_final(message: types.Message, state: FSMContext):
 
         # Логика расчета коэффициентов
         if cifra <= 60:
-            base_result *= 0.5  # Уменьшаем на 50%
+            base_result *= 0.5
         elif cifra <= 70:
-            base_result *= 0.7  # Уменьшаем на 30%
+            base_result *= 0.7
         elif cifra <= 80:
-            base_result *= 0.8  # Уменьшаем на 20%
+            base_result *= 0.8
         elif cifra <= 90:
-            base_result *= 0.9  # Уменьшаем на 10%
+            base_result *= 0.9
         elif cifra <= 100:
-            pass  # Без изменений
+            pass
         elif cifra <= 130:
-            base_result *= 1.1  # Увеличиваем на 10%
+            base_result *= 1.1
         elif cifra <= 160:
-            base_result *= 1.2  # Увеличиваем на 20%
+            base_result *= 1.2
         else:
-            base_result *= 1.3  # Увеличиваем на 30%
+            base_result *= 1.3
     except ValueError:
         await message.answer("Ошибка в данных вопроса №1. Похоже, там введено не число.")
 
