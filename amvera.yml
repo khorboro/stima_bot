@@ -9,5 +9,4 @@ build:
 
 run:
   scriptName: main.py
-  persistenceMounts:
-    - mountPath: /data
+
