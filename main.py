@@ -264,7 +264,7 @@ async def process_final(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer("Ошибка в данных вопроса №14. Похоже, там введено не слово.")
 
-    await message.answer(f"Расчет окончен! Итоговое значение: {base_result}")
+    await message.answer(f"Расчет окончен! Итоговое значение: {int(base_result)}")
     await state.clear()
 
 
