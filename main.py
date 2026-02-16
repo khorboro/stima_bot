@@ -121,10 +121,8 @@ async def process_final(message: types.Message, state: FSMContext):
     data = await state.get_data()
     base_result = 300
     try:
-        # Преобразуем строку из state в число
         cifra = int(float(data.get('q1', 0))) #1
 
-        # Логика расчета коэффициентов
         if cifra <= 60:
             base_result *= 0.5
         elif cifra <= 70:
