@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command
 from dotenv import load_dotenv
 import os
-
+import random
 load_dotenv()
 
 API_TOKEN = os.getenv("BOT_TOKEN")
@@ -32,6 +32,12 @@ class Form(StatesGroup):
     q13 = State()
     q14 = State()
     q15 = State()
+
+
+@dp.message(Command("roll"))
+async def cmd_roll(message: types.Message):
+    random_number = random.randint(0, 99)
+    await message.answer(f"🎲 Ваше число: {random_number}")
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message, state: FSMContext):
