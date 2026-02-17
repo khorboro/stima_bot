@@ -123,9 +123,9 @@ async def process_q14(message: types.Message, state: FSMContext):
     await message.answer("Введите фамилию врача: ")
     await state.set_state(Form.q15)
 
-@dp.message(Form.q14)
+@dp.message(Form.q15)
 async def process_final(message: types.Message, state: FSMContext):
-    await state.update_data(q14=message.text)
+    await state.update_data(q15=message.text)
     data = await state.get_data()
     base_result = 300
     try:
