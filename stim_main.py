@@ -85,7 +85,7 @@ while True: #8
         ttl = ttl + 300 * 0.1
     elif 31 <= cifra <= 40:
         ttl = ttl + 300 * 0.15
-    elif cifra >= 31:
+    elif cifra >= 41:
         ttl += 300 * 0.2
     break
 

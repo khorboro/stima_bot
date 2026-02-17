@@ -31,29 +31,30 @@ class Form(StatesGroup):
     q12 = State()
     q13 = State()
     q14 = State()
+    q15 = State()
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message, state: FSMContext):
-    await message.answer("Бот запущен. Введите текущую нагрузку врача в процентах: ")
+    await message.answer("Бот запущен. Введите текущую нагрузку врача в процентах: (от 0 до 160+) ")
     await state.set_state(Form.q1)
 
 
 @dp.message(Form.q1)
 async def process_q1(message: types.Message, state: FSMContext):
     await state.update_data(q1=message.text)
-    await message.answer("Соблюдение стандартов медицинской помощи. Введите: да или нет, где выполнил это да, где нарушения это нет: ")
+    await message.answer("Соблюдение стандартов медицинской помощи. Да - это выполнил, нарушений нет, а нет - имеются нарушения: ")
     await state.set_state(Form.q2)
 
 @dp.message(Form.q2)
 async def process_q2(message: types.Message, state: FSMContext):
     await state.update_data(q2=message.text)
-    await message.answer("Соблюдение  правил учета, порядка  хранения,  получения, использования лекарственных средств и медицинских изделий, сроков их годности. Введите: да или нет, где отсутствие это да, где выявлено это нет: ")
+    await message.answer("Соблюдение  правил учета, порядка  хранения,  получения, использования лекарственных средств и медицинских изделий, сроков их годности. Введите: да - это выполнил, нарушений нет,а нет - имеются нарушения: ")
     await state.set_state(Form.q3)
 
 @dp.message(Form.q3)
 async def process_q3(message: types.Message, state: FSMContext):
     await state.update_data(q3=message.text)
-    await message.answer("Введите количество направленных на прививки от врача: ")
+    await message.answer("Введите количество направленных на прививки от врача (от 0 до 100+): ")
     await state.set_state(Form.q4)
 
 @dp.message(Form.q4)
@@ -65,57 +66,62 @@ async def process_q4(message: types.Message, state: FSMContext):
 @dp.message(Form.q5)
 async def process_q5(message: types.Message, state: FSMContext):
     await state.update_data(q5=message.text)
-    await message.answer("Введите количество дефектов контроля качества: ")
+    await message.answer("Введите количество дефектов контроля качества (0, от 1 до 5, 5 и более): ")
     await state.set_state(Form.q6)
 
 @dp.message(Form.q6)
 async def process_q6(message: types.Message, state: FSMContext):
     await state.update_data(q6=message.text)
-    await message.answer("Введите: да или нет, есть или нет благодарности в МЗ: ")
+    await message.answer("Есть ли зарегистрированные благодарности в МЗ (введите: да или нет): ")
     await state.set_state(Form.q7)
 
 @dp.message(Form.q7)
 async def process_q7(message: types.Message, state: FSMContext):
     await state.update_data(q7=message.text)
-    await message.answer("Введите случаи оформления диспансеризации: ")
+    await message.answer("Введите случаи оформления диспансеризации (от 0 до 40+ случаев): ")
     await state.set_state(Form.q8)
 
 @dp.message(Form.q8)
 async def process_q8(message: types.Message, state: FSMContext):
     await state.update_data(q8=message.text)
-    await message.answer("Введите количество направлений на диспансеризацию: ")
+    await message.answer("Введите количество направлений на диспансеризацию (от 0 до 100+ случаев): ")
     await state.set_state(Form.q9)
 
 @dp.message(Form.q9)
 async def process_q9(message: types.Message, state: FSMContext):
     await state.update_data(q9=message.text)
-    await message.answer("Введите текущую нагрузку врача по диспансерному наблюдению: ")
+    await message.answer("Введите текущую нагрузку врача по диспансерному наблюдению (от 0 до 160+%) ")
     await state.set_state(Form.q10)
 
 @dp.message(Form.q10)
 async def process_q10(message: types.Message, state: FSMContext):
     await state.update_data(q10=message.text)
-    await message.answer("Привлечение к дополнительной работе. Введите: да или нет, 1) привлекался, 2) не привлекался: ")
+    await message.answer("Привлечение к дополнительной работе. Да - привлекался, нет - не привлекался: ")
     await state.set_state(Form.q11)
 
 @dp.message(Form.q11)
 async def process_q11(message: types.Message, state: FSMContext):
     await state.update_data(q11=message.text)
-    await message.answer("облюдение правил внутреннего распорядка. Введите: нет или есть, где: 1) выполнение, 2) имеется нарушение: ")
+    await message.answer("Соблюдение правил внутреннего распорядка. Есть - выполнение, нет - имеется нарушение: ")
     await state.set_state(Form.q12)
 
 @dp.message(Form.q12)
 async def process_q12(message: types.Message, state: FSMContext):
     await state.update_data(q12=message.text)
-    await message.answer("Соблюдение сроков оформления документов на МСЭ. Введите: нет или есть, где: 1) до 30 дней, 2) имеется нарушение сроков. ")
+    await message.answer("Соблюдение сроков оформления документов на МСЭ. Нет - до 30 дней без нарушений, есть - имеется нарушение сроков. ")
     await state.set_state(Form.q13)
 
 @dp.message(Form.q13)
 async def process_q13(message: types.Message, state: FSMContext):
     await state.update_data(q13=message.text)
-    await message.answer("Выполнение СЭМД 500 и более. Введите: да или нет, 1)выполнение, 2) не выполнение: ")
+    await message.answer("Выполнение СЭМД 500 и более (да или нет): ")
     await state.set_state(Form.q14)
 
+@dp.message(Form.q14)
+async def process_q14(message: types.Message, state: FSMContext):
+    await state.update_data(q3=message.text)
+    await message.answer("Введите фамилию врача: ")
+    await state.set_state(Form.q15)
 
 @dp.message(Form.q14)
 async def process_final(message: types.Message, state: FSMContext):
@@ -204,7 +210,7 @@ async def process_final(message: types.Message, state: FSMContext):
         elif cifra >= 31:
             base_result += 300 * 0.2
     except ValueError:
-        await message.answer("Ошибка в данных вопроса №8. Похоже, там введенf не число.")
+        await message.answer("Ошибка в данных вопроса №8. Похоже, там введено не число.")
 
     try: #8
         cifra = int(float(data.get('q9', 0)))
@@ -218,7 +224,7 @@ async def process_final(message: types.Message, state: FSMContext):
         elif cifra >= 100:
             base_result += 300 * 0.2
     except ValueError:
-        await message.answer("Ошибка в данных вопроса №9. Похоже, там введенf не число.")
+        await message.answer("Ошибка в данных вопроса №9. Похоже, там введено не число.")
 
     try: #9
         cifra = int(float(data.get('q10', 0)))
@@ -236,7 +242,7 @@ async def process_final(message: types.Message, state: FSMContext):
         elif cifra >= 161:
             base_result += 300 * 0.3
     except ValueError:
-        await message.answer("Ошибка в данных вопроса №10. Похоже, там введенf не число.")
+        await message.answer("Ошибка в данных вопроса №10. Похоже, там введено не число.")
 
     try: #10
         slovo = data.get('q11', '').strip().lower()
@@ -266,7 +272,7 @@ async def process_final(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer("Ошибка в данных вопроса №14. Похоже, там введено не слово.")
 
-    await message.answer(f"Расчет окончен! Итоговое значение: {int(base_result)}")
+    await message.answer(f"Расчет окончен! Итоговое значение количества стимулирующих для врача {data.get('q15', '')}: {int(base_result)}")
     await state.clear()
 
 
