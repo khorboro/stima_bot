@@ -33,7 +33,6 @@ class Form(StatesGroup):
     q14 = State()
     q15 = State()
 
-
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message, state: FSMContext):
     await message.answer("Бот запущен. Введите текущую нагрузку врача в процентах: (от 0 до 160+) ")
