@@ -125,7 +125,7 @@ async def process_q13(message: types.Message, state: FSMContext):
 
 @dp.message(Form.q14)
 async def process_q14(message: types.Message, state: FSMContext):
-    await state.update_data(q3=message.text)
+    await state.update_data(q14=message.text)
     await message.answer("Введите фамилию врача: ")
     await state.set_state(Form.q15)
 
@@ -134,22 +134,38 @@ async def process_final(message: types.Message, state: FSMContext):
     await state.update_data(q15=message.text)
     data = await state.get_data()
     base_result = 300
-    try:
-        cifra = int(float(data.get('q1', 0))) #1
 
-        if cifra <= 60:
+    def safe_float_get(key, default=0):
+        try:
+            val = data.get(key, default)
+            if val == '':
+                return 0
+            return float(val)
+        except (ValueError, TypeError):
+            return 0
+
+    def safe_str_get(key, default=''):
+        val = data.get(key, default)
+        if val is None:
+            return ''
+        return str(val).strip().lower()
+
+
+    try: #1
+        number_of_cases = safe_float_get('q1')
+        if number_of_cases <= 60:
             base_result *= 0.5
-        elif cifra <= 70:
+        elif number_of_cases <= 70:
             base_result *= 0.7
-        elif cifra <= 80:
+        elif number_of_cases <= 80:
             base_result *= 0.8
-        elif cifra <= 90:
+        elif number_of_cases <= 90:
             base_result *= 0.9
-        elif cifra <= 100:
+        elif number_of_cases <= 100:
             pass
-        elif cifra <= 130:
+        elif number_of_cases <= 130:
             base_result *= 1.1
-        elif cifra <= 160:
+        elif number_of_cases <= 160:
             base_result *= 1.2
         else:
             base_result *= 1.3
@@ -157,123 +173,123 @@ async def process_final(message: types.Message, state: FSMContext):
         await message.answer("Ошибка в данных вопроса №1. Похоже, там введено не число.")
 
     try: #2
-        slovo = data.get('q2', '').strip().lower()
-        if slovo == "Нет".lower():
+        slovo = safe_str_get('q2')
+        if slovo in ["нет", "no", "н"]:
             base_result -= 300 * 0.1
     except ValueError:
         await message.answer("Ошибка в данных вопроса №2. Похоже, там введено не слово.")
 
     try: #3
-        slovo = data.get('q3', '').strip().lower()
-        if slovo == "Нет".lower():
+        slovo = safe_str_get('q3')
+        if slovo in ["нет", "no", "н"]:
             base_result -= 300 * 0.1
     except ValueError:
         await message.answer("Ошибка в данных вопроса №3. Похоже, там введено не слово.")
 
     try: #4
-        cifra = int(float(data.get('q4', 0)))
+        number_of_cases = safe_float_get('q4')
 
-        if cifra < 70:  # 4 arg
+        if number_of_cases < 70:  # 4 arg
             base_result -= 300 * 0.1
-        elif cifra > 100:
+        elif number_of_cases > 100:
             base_result += 300 * 0.1
     except ValueError:
         await message.answer("Ошибка в данных вопроса №4. Похоже, там введено не число.")
 
     try: #5
-        slovo = data.get('q5', '').strip().lower()
-        if slovo == "Нет".lower():
+        slovo = safe_str_get('q6')
+        if slovo in ["нет", "no", "н"]:
             base_result -= 300 * 0.1
     except ValueError:
         await message.answer("Ошибка в данных вопроса №5. Похоже, там введено не слово.")
 
     try: #6
-        cifra = int(float(data.get('q6', 0)))
+        number_of_cases = safe_float_get('q6')
 
-        if 1 <= cifra < 5:
+        if 1 <= number_of_cases < 5:
             base_result -= 300 * 0.1
-        elif cifra >= 5:
+        elif number_of_cases >= 5:
             base_result -= 300 * 0.2
     except ValueError:
         await message.answer("Ошибка в данных вопроса №6. Похоже, там введено не число.")
 
     try: #7
-        slovo = data.get('q7', '').strip().lower()
-        if slovo == "Нет".lower():
+        slovo = safe_str_get('q6')
+        if slovo in ["нет", "no", "н"]:
             base_result -= 300 * 0.1
     except ValueError:
         await message.answer("Ошибка в данных вопроса №7. Похоже, там введено не слово.")
 
     try: #8
-        cifra = int(float(data.get('q8', 0)))
+        number_of_cases = safe_float_get('q8')
 
-        if cifra == 20:
+        if number_of_cases == 20:
             base_result += 300 * 0.05
-        elif 21 <= cifra <= 30:
+        elif 21 <= number_of_cases <= 30:
             base_result += 300 * 0.1
-        elif 31 <= cifra <= 40:
+        elif 31 <= number_of_cases <= 40:
             base_result += 300 * 0.15
-        elif cifra >= 31:
+        elif number_of_cases >= 41:
             base_result += 300 * 0.2
     except ValueError:
         await message.answer("Ошибка в данных вопроса №8. Похоже, там введено не число.")
 
-    try: #8
-        cifra = int(float(data.get('q9', 0)))
+    try: #9
+        number_of_cases = safe_float_get('q9')
 
-        if 51 <= cifra <= 59:
+        if 51 <= number_of_cases <= 59:
             base_result += 300 * 0.05
-        elif 60 <= cifra <= 79:
+        elif 60 <= number_of_cases <= 79:
             base_result += 300 * 0.1
-        elif 80 <= cifra <= 99:
+        elif 80 <= number_of_cases <= 99:
             base_result += 300 * 0.15
-        elif cifra >= 100:
+        elif number_of_cases >= 100:
             base_result += 300 * 0.2
     except ValueError:
         await message.answer("Ошибка в данных вопроса №9. Похоже, там введено не число.")
 
-    try: #9
-        cifra = int(float(data.get('q10', 0)))
+    try: #10
+        number_of_cases = safe_float_get('q10')
 
-        if cifra <= 70:
+        if number_of_cases <= 70:
             base_result -= 300 * 0.3
-        elif 71 <= cifra <= 80:
+        elif 71 <= number_of_cases <= 80:
             base_result -= 300 * 0.2
-        elif 81 <= cifra <= 90:
+        elif 81 <= number_of_cases <= 90:
             base_result -= 300 * 0.1
-        elif 101 <= cifra <= 130:
+        elif 101 <= number_of_cases <= 130:
             base_result += 300 * 0.1
-        elif 131 <= cifra <= 160:
+        elif 131 <= number_of_cases <= 160:
             base_result += 300 * 0.2
-        elif cifra >= 161:
+        elif number_of_cases >= 161:
             base_result += 300 * 0.3
     except ValueError:
         await message.answer("Ошибка в данных вопроса №10. Похоже, там введено не число.")
 
-    try: #10
-        slovo = data.get('q11', '').strip().lower()
-        if slovo == "Да".lower():
+    try: #11
+        slovo = safe_str_get('q11')
+        if slovo in ["да", "yes", "д"]:
             base_result += 300 * 0.1
     except ValueError:
         await message.answer("Ошибка в данных вопроса №11. Похоже, там введено не слово.")
 
-    try:
-        slovo = data.get('q12', '').strip().lower()
-        if slovo == "Есть".lower():
+    try: #12
+        slovo = safe_str_get('q12')
+        if slovo in ["есть", "yes", "да", "д", "е"]:
             base_result -= 300 * 0.1
     except ValueError:
         await message.answer("Ошибка в данных вопроса №12. Похоже, там введено не слово.")
 
-    try:
-        slovo = data.get('q13', '').strip().lower()
-        if slovo == "Есть".lower():
+    try: #13
+        slovo = safe_str_get('q13')
+        if slovo in ["есть", "yes", "да", "д", "е"]:
             base_result -= 300 * 0.1
     except ValueError:
         await message.answer("Ошибка в данных вопроса №13. Похоже, там введено не слово.")
 
-    try:
-        slovo = data.get('q14', '').strip().lower()
-        if slovo == "Нет".lower():
+    try: #14
+        slovo = safe_str_get('q14')
+        if slovo in ["нет", "no", "н"]:
             base_result -= 300 * 0.1
     except ValueError:
         await message.answer("Ошибка в данных вопроса №14. Похоже, там введено не слово.")
