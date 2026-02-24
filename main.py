@@ -34,7 +34,6 @@ class Form(StatesGroup):
     q12 = State()
     q13 = State()
     q14 = State()
-    q15 = State()
 
 
 @dp.message(Command("roll"))
@@ -166,7 +165,7 @@ async def process_q14(message: types.Message, state: FSMContext):
     await state.update_data(q14=message.text)
     await process_final(message, state)
 
-@dp.message(Form.q15)
+
 async def process_final(message: types.Message, state: FSMContext):
     data = await state.get_data()
     base_result = 300
