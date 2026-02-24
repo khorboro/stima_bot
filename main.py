@@ -79,7 +79,7 @@ async def cmd_doctor(message: types.Message):
 
 @dp.message(Form.doctor_name)
 async def process_doctor_name(message: types.Message, state: FSMContext):
-    await state.update_data(q15=message.text)
+    await state.update_data(doctor_name=message.text)
     await message.answer(f"Врач: {message.text}\n\nВведите текущую нагрузку врача в процентах (от 0 до 160+):")
     await state.set_state(Form.q1)
 
@@ -298,7 +298,7 @@ async def process_final(message: types.Message, state: FSMContext):
     if slovo in ["нет", "no", "н"]:
         base_result -= 300 * 0.1
 
-    doctor_name = data.get('q15', '')
+    doctor_name = data.get('doctor_name', '')
     final_score = int(base_result)
 
     save_doctor(doctor_name, final_score)
