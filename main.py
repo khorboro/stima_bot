@@ -6,6 +6,8 @@ from aiogram.filters import Command
 from dotenv import load_dotenv
 import os
 import random
+from database import get_doctor_history, get_all_doctors, save_doctor, init_db
+
 load_dotenv()
 
 API_TOKEN = os.getenv("BOT_TOKEN")
@@ -38,6 +40,36 @@ class Form(StatesGroup):
 async def cmd_roll(message: types.Message):
     random_number = random.randint(0, 99)
     await message.answer(f"🎲 Ваше число: {random_number}")
+
+@dp.message(Command("history"))
+async def cmd_history(message: types.Message):
+    rows = get_all_doctors()
+    if not rows:
+        await message.answer("База данных пуста.")
+        return
+    text = "📋 *Последние записи:*\n\n"
+    for name, score, created_at in rows:
+        date = created_at[:10] if created_at else "—"
+        text += f"👨‍⚕️ *{name}* — {score} баллов ({date})\n"
+    await message.answer(text, parse_mode="Markdown")
+
+
+@dp.message(Command("doctor"))
+async def cmd_doctor(message: types.Message):
+    args = message.text.split(maxsplit=1)
+    if len(args) < 2:
+        await message.answer("Использование: /doctor Фамилия")
+        return
+    name = args[1].strip()
+    rows = get_doctor_history(name)
+    if not rows:
+        await message.answer(f"Врач *{name}* не найден в базе.", parse_mode="Markdown")
+        return
+    text = f"👨‍⚕️ *История врача {name}:*\n\n"
+    for score, created_at in rows:
+        date = created_at[:10] if created_at else "—"
+        text += f"• {score} баллов — {date}\n"
+    await message.answer(text, parse_mode="Markdown")
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message, state: FSMContext):
@@ -150,7 +182,7 @@ async def process_final(message: types.Message, state: FSMContext):
             return ''
         return str(val).strip().lower()
 
-
+    # 1 - Нагрузка врача
     try: #1
         number_of_cases = safe_float_get('q1')
         if number_of_cases <= 60:
@@ -172,6 +204,7 @@ async def process_final(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer("Ошибка в данных вопроса №1. Похоже, там введено не число.")
 
+    # 2 - Стандарты медпомощи
     try: #2
         slovo = safe_str_get('q2')
         if slovo in ["нет", "no", "н"]:
@@ -179,6 +212,7 @@ async def process_final(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer("Ошибка в данных вопроса №2. Похоже, там введено не слово.")
 
+    # 3 - Учёт лекарств
     try: #3
         slovo = safe_str_get('q3')
         if slovo in ["нет", "no", "н"]:
@@ -186,6 +220,7 @@ async def process_final(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer("Ошибка в данных вопроса №3. Похоже, там введено не слово.")
 
+    # 4 - Направлено на прививки
     try: #4
         number_of_cases = safe_float_get('q4')
 
@@ -196,13 +231,15 @@ async def process_final(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer("Ошибка в данных вопроса №4. Похоже, там введено не число.")
 
+    # 5 - Далеко зашедшие стадии (q5)
     try: #5
-        slovo = safe_str_get('q6')
+        slovo = safe_str_get('q5')
         if slovo in ["нет", "no", "н"]:
             base_result -= 300 * 0.1
     except ValueError:
         await message.answer("Ошибка в данных вопроса №5. Похоже, там введено не слово.")
 
+    # 6 - Дефекты контроля качества (q6 - число)
     try: #6
         number_of_cases = safe_float_get('q6')
 
@@ -213,13 +250,15 @@ async def process_final(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer("Ошибка в данных вопроса №6. Похоже, там введено не число.")
 
+    # 7 - Благодарности (q7)
     try: #7
-        slovo = safe_str_get('q6')
+        slovo = safe_str_get('q7')
         if slovo in ["нет", "no", "н"]:
             base_result -= 300 * 0.1
     except ValueError:
         await message.answer("Ошибка в данных вопроса №7. Похоже, там введено не слово.")
 
+    # 8 - Диспансеризация (оформление)
     try: #8
         number_of_cases = safe_float_get('q8')
 
@@ -234,6 +273,7 @@ async def process_final(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer("Ошибка в данных вопроса №8. Похоже, там введено не число.")
 
+    # 9 - Направления на диспансеризацию
     try: #9
         number_of_cases = safe_float_get('q9')
 
@@ -248,6 +288,7 @@ async def process_final(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer("Ошибка в данных вопроса №9. Похоже, там введено не число.")
 
+    # 10 - Диспансерное наблюдение
     try: #10
         number_of_cases = safe_float_get('q10')
 
@@ -266,6 +307,7 @@ async def process_final(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer("Ошибка в данных вопроса №10. Похоже, там введено не число.")
 
+    # 11 - Дополнительная работа
     try: #11
         slovo = safe_str_get('q11')
         if slovo in ["да", "yes", "д"]:
@@ -273,6 +315,7 @@ async def process_final(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer("Ошибка в данных вопроса №11. Похоже, там введено не слово.")
 
+    # 12 - Внутренний распорядок
     try: #12
         slovo = safe_str_get('q12')
         if slovo in ["есть", "yes", "да", "д", "е"]:
@@ -280,6 +323,7 @@ async def process_final(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer("Ошибка в данных вопроса №12. Похоже, там введено не слово.")
 
+    # 13 - Сроки МСЭ
     try: #13
         slovo = safe_str_get('q13')
         if slovo in ["есть", "yes", "да", "д", "е"]:
@@ -287,6 +331,7 @@ async def process_final(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer("Ошибка в данных вопроса №13. Похоже, там введено не слово.")
 
+    # 14 - СЭМД
     try: #14
         slovo = safe_str_get('q14')
         if slovo in ["нет", "no", "н"]:
@@ -294,11 +339,32 @@ async def process_final(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer("Ошибка в данных вопроса №14. Похоже, там введено не слово.")
 
-    await message.answer(f"Расчет окончен! Итоговое значение количества стимулирующих для врача {data.get('q15', '')}: {int(base_result)}")
+    doctor_name = data.get('q15', '')
+    final_score = int(base_result)
+
+    save_doctor(doctor_name, final_score)
+
+    history = get_doctor_history(doctor_name)
+
+    # await message.answer(f"Расчет окончен! Итоговое значение количества стимулирующих для врача {data.get('q15', '')}: {int(base_result)}")
+    # await state.clear()
+
+    result_text = (
+        f"✅ Расчёт окончен!\n\n"
+        f"👨‍⚕️ Врач: *{doctor_name}*\n"
+        f"🏆 Стимулирующих баллов: *{final_score}*\n\n"
+        f"📊 История последних расчётов:\n"
+    )
+    for score, created_at in history:
+        date = created_at[:10] if created_at else "—"
+        result_text += f"• {score} баллов — {date}\n"
+
+    await message.answer(result_text, parse_mode="Markdown")
     await state.clear()
 
 
 async def main():
+    init_db()
     await dp.start_polling(bot)
 
 
