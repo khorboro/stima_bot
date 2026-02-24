@@ -168,7 +168,6 @@ async def process_q14(message: types.Message, state: FSMContext):
 
 @dp.message(Form.q15)
 async def process_final(message: types.Message, state: FSMContext):
-    await state.update_data(q15=message.text)
     data = await state.get_data()
     base_result = 300
 
